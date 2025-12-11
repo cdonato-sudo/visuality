@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-2-znd9$fzuznu^6r-eou*2f9bkx)k^noidts&zaui$6oz5!gm_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["visuality.onrender.com", "localhost", "127.0.0.1]
+ALLOWED_HOSTS = ["visuality.onrender.com", "localhost", "127.0.0.1"]
 
 
 # Application definition
@@ -138,7 +138,7 @@ EMAIL_HOST_PASSWORD = "jaze erlu jspb xzdu"  # la contraseña de app de Google
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-# Opcional pero prolijo
+
 DEFAULT_FROM_EMAIL = "no-reply@visuality.com"
 
 
