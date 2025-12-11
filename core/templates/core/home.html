@@ -1,0 +1,85 @@
+{% extends 'core/base.html' %}
+{% block title %}Inicio{% endblock %}
+
+{% block content %}
+
+<h1 class="fw-bold mb-3">A tu alcance, Visuality</h1>
+
+<p class="fs-5 mb-4">
+    Visuality te permite compartir tu video en una pantalla LED ubicada en el corazón de Buenos Aires.
+    Elegí un plan, subí tu contenido y listo.
+</p>
+
+<div class="mb-5">
+    <a href="{% url 'upload' %}" class="btn btn-primary me-2">Subí tu video</a>
+    <a href="{% url 'live' %}" class="btn btn-outline-primary">Ver pantalla en vivo</a>
+</div>
+
+<hr class="border-secondary my-5">
+
+<h2 class="fw-bold mb-4">Planes disponibles</h2>
+
+{# 🔹 Si tenés servicios en BD, se muestran; si no, se muestran los 2 planes fijos #}
+{% if servicios %}
+    {% for servicio in servicios %}
+        <div class="plan-card mb-4 shadow">
+            <div>
+                <h3 class="mb-1 fw-bold">{{ servicio.titulo }}</h3>
+                <p class="text-secondary mb-0">{{ servicio.descripcion }}</p>
+            </div>
+
+            <div class="plan-price">
+                <span class="amount">{{ servicio.precio }}</span>
+                <span class="currency">ARS</span>
+                <br>
+                <a href="{% url 'upload' %}" class="btn-plan mt-2">Elegir plan</a>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    {# 🔹 Plan 1: Publicidad puntual #}
+    <div class="plan-card mb-4 shadow">
+        <div>
+            <h3 class="mb-1 fw-bold">Publicidad puntual</h3>
+            <p class="text-secondary mb-0">
+                Transmití tu video de 15 segundos una vez en pantalla LED.
+                Ideal para lanzamientos o anuncios únicos.
+            </p>
+        </div>
+
+        <div class="plan-price">
+            <span class="amount">$34.125</span>
+            <span class="currency">ARS</span>
+            <br>
+            <a href="{% url 'upload' %}" class="btn-plan mt-2">Elegir plan</a>
+        </div>
+    </div>
+
+    {# 🔹 Plan 2: Plan mensual corporativo #}
+    <div class="plan-card mb-4 shadow">
+        <div>
+            <h3 class="mb-1 fw-bold">Plan mensual corporativo</h3>
+            <p class="text-secondary mb-0">
+                30 días de difusión, 6 veces por día.
+                Incluye un 15% de descuento sobre el precio base.
+            </p>
+        </div>
+
+        <div class="plan-price">
+            <a href="https://wa.me/15551234567" class="btn-plan mt-2">
+                Contacta con nosotros
+            </a>
+        </div>
+    </div>
+{% endif %}
+
+{% if not user.is_authenticated %}
+    <p class="mt-4">
+        ¿Ya tenés una cuenta?
+        <a href="{% url 'login' %}" class="text-primary">Iniciá sesión</a>
+        o
+        <a href="{% url 'register' %}" class="text-primary">registrate</a>.
+    </p>
+{% endif %}
+
+{% endblock %}

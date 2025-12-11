@@ -1,0 +1,47 @@
+{% extends 'core/base.html' %}
+{% block title %}Subir video{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Subir video</h1>
+
+<form id="upload-form" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Subir</button>
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("upload-form");
+    const fileInput = document.getElementById("id_archivo");  // campo 'archivo' del VideoForm
+
+    if (!form || !fileInput) return;
+
+    form.addEventListener("submit", function (e) {
+        const file = fileInput.files[0];
+        if (!file) {
+            // Sin archivo, dejamos que el form se envíe y el servidor valide
+            return;
+        }
+
+        e.preventDefault();  // frenamos el envío hasta saber la duración
+
+        const video = document.createElement("video");
+        video.preload = "metadata";
+
+        video.onloadedmetadata = function () {
+            window.URL.revokeObjectURL(video.src);
+            const duration = video.duration; // segundos
+
+            if (duration > 15) {
+                alert("No es posible subir este video: debe durar como máximo 15 segundos.");
+            } else {
+                form.submit();  // ahora sí mandamos el formulario
+            }
+        };
+
+        video.src = URL.createObjectURL(file);
+    });
+});
+</script>
+{% endblock %}

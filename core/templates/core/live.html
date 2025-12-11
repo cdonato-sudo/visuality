@@ -1,0 +1,63 @@
+{% extends "core/base.html" %}
+{% block title %}Pantalla en vivo{% endblock %}
+
+{% block content %}
+
+<h1 class="mb-4">Pantalla en vivo</h1>
+
+{% if videos %}
+  <!-- Reproductor principal -->
+  <div class="mb-4">
+    <video id="player"
+           class="w-100"
+           controls
+           autoplay
+           muted
+           playsinline>
+      Tu navegador no soporta la reproducción de video.
+    </video>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const player = document.getElementById("player");
+
+      // Playlist generada desde Django (solo URLs)
+      const playlist = [
+        {% for v in videos %}
+          "{{ v.archivo.url }}"{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ];
+
+      if (!playlist.length || !player) return;
+
+      let currentIndex = 0;
+
+      function playCurrent() {
+        player.src = playlist[currentIndex];
+        player.load();
+
+        const promise = player.play();
+        if (promise !== undefined) {
+          promise.catch(err => {
+            console.log("Autoplay bloqueado:", err);
+          });
+        }
+      }
+
+      // Cuando termina un video → pasa al siguiente
+      player.addEventListener("ended", function () {
+        currentIndex = (currentIndex + 1) % playlist.length;  // vuelve al primero
+        playCurrent();
+      });
+
+      // Iniciar reproducción
+      playCurrent();
+    });
+  </script>
+
+{% else %}
+  <p class="text-muted">Todavía no hay videos cargados.</p>
+{% endif %}
+
+{% endblock %}

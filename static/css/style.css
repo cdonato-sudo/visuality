@@ -1,0 +1,170 @@
+/* ===========================
+   VARIABLES GLOBALS (LIGHT MODE)
+   =========================== */
+
+:root,
+[data-bs-theme="light"] {
+    --page-bg: #f4f6fb;
+    --page-text: #111827;
+    --nav-bg: #ffffff;
+    --nav-text: #111827;
+    --card-bg: #ffffff;
+    --card-text: #111827;
+    --card-subtext: #6b7280;
+}
+
+/* ===========================
+   DARK MODE
+   =========================== */
+[data-bs-theme="dark"] {
+    --page-bg: #0B0E1A;
+    --page-text: #E6E6E6;
+    --nav-bg: #0D1226;
+    --nav-text: #E5E7EB;
+    --card-bg: #161A2B;
+    --card-text: #ffffff;
+    --card-subtext: #B5B8C7;
+}
+
+/* ===========================
+   ESTILO GENERAL
+   =========================== */
+body {
+    background-color: var(--page-bg);
+    color: var(--page-text);
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+h1, h2, h3, h4 {
+    color: var(--page-text);
+}
+
+hr {
+    border-color: rgba(255,255,255,0.08);
+}
+
+/* Links */
+a {
+    color: #4EA8FF;
+    text-decoration: none;
+}
+a:hover {
+    text-decoration: underline;
+}
+
+/* ===========================
+   NAVBAR
+   =========================== */
+.bg-navy {
+    background-color: var(--nav-bg) !important;
+}
+
+.navbar,
+.navbar a,
+.navbar-brand,
+.nav-link {
+    color: var(--nav-text) !important;
+}
+
+.nav-link:hover {
+    color: #4EA8FF !important;
+}
+
+/* ===========================
+   BOTONES
+   =========================== */
+.btn-primary {
+    background: linear-gradient(135deg, #1f6bff, #4ea8ff) !important;
+    border: none !important;
+    font-weight: 600;
+    padding: 0.6rem 1.3rem;
+    border-radius: 10px;
+}
+
+.btn-primary:hover { opacity: 0.85; }
+
+.btn-outline-primary {
+    border-color: #4ea8ff !important;
+    color: #4ea8ff !important;
+}
+
+.btn-outline-primary:hover {
+    background: #4ea8ff !important;
+    color: #0b0e1a !important;
+}
+
+/* ===========================
+   TARJETAS DE PLANES
+   =========================== */
+.plan-card {
+    background-color: var(--card-bg);
+    color: var(--card-text);
+    border-radius: 14px;
+    padding: 1.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    transition: transform 0.15s ease, box-shadow 0.2s ease;
+    border: 1px solid rgba(255,255,255,0.04);
+}
+
+.plan-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 12px 28px rgba(0,0,0,0.35);
+}
+
+.plan-card h3 { margin-bottom: 0.4rem; font-weight: 700; }
+
+.plan-card p {
+    margin-bottom: 0;
+    color: var(--card-subtext);
+}
+
+.plan-price {
+    text-align: right;
+    min-width: 180px;
+}
+
+.plan-price .amount {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #4EA8FF;
+}
+
+.plan-price .currency {
+    font-size: 0.85rem;
+    margin-left: 4px;
+    opacity: 0.85;
+}
+
+.btn-plan {
+    display: inline-block;
+    margin-top: 0.6rem;
+    background: #1f6bff;
+    border: none;
+    padding: 0.45rem 1.2rem;
+    border-radius: 8px;
+    color: #fff;
+    font-weight: 600;
+}
+
+/* ===========================
+   FLASH MESSAGES
+   =========================== */
+.alert {
+    border-radius: 10px;
+    font-weight: 500;
+    padding: 1rem 1.2rem;
+}
+
+.alert-danger,
+.alert-error {
+    background: #b02a37 !important;
+    color: white !important;
+}
+
+.alert-success {
+    background: #198754 !important;
+    color: white !important;
+}
