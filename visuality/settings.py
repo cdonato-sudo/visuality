@@ -139,7 +139,7 @@ ANYMAIL = {
 
 DEFAULT_FROM_EMAIL = os.getenv(
     "DEFAULT_FROM_EMAIL",
-    "Visuality <cdonato@pioix.edu.ar>"
+    "Visuality <pantallasvisuality@gmail.com>"
 )
 
 
