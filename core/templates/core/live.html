@@ -7,6 +7,7 @@
 <div class="mb-4">
   <video id="player"
          class="w-100"
+         controls
          autoplay
          muted
          playsinline>
@@ -15,66 +16,41 @@
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
-  const player = document.getElementById("player");
-  const BASE = "{{ base_video_url }}";
-  let playingBase = true;
-  let currentUserVideoId = null;
+  document.addEventListener("DOMContentLoaded", function () {
+    const player = document.getElementById("player");
+    const baseUrl = "{{ base_video_url }}";
 
-  function play(url) {
-    player.src = url;
-    player.load();
-    const p = player.play();
-    if (p) p.catch(() => {});
-  }
+    // Si hay video pendiente, usamos ese; si no, base.
+    const nextUrl = {% if next_video %}"{{ next_video.archivo.url }}"{% else %}null{% endif %};
+    const nextId  = {% if next_video %}{{ next_video.id }}{% else %}null{% endif %};
 
-  function playBase() {
-    playingBase = true;
-    currentUserVideoId = null;
-    play(BASE);
-  }
+    function play(url) {
+      player.src = url;
+      player.load();
+      const p = player.play();
+      if (p !== undefined) p.catch(()=>{});
+    }
 
-  async function markPlayed(id) {
-    try {
-      await fetch(`/mark_played/${id}/`, { method: "POST" });
-    } catch (e) {}
-  }
+    // Arranque: si hay next, reproducilo. Si no, base.
+    play(nextUrl || baseUrl);
 
-  async function checkNext() {
-    // si ya está reproduciendo video de usuario, no interrumpimos
-    if (!playingBase) return;
+    // Si el video falla (404, etc), volvemos al base
+    player.addEventListener("error", function () {
+      play(baseUrl);
+    });
 
-    try {
-      const res = await fetch("/api/next-video/", { cache: "no-store" });
-      const data = await res.json();
-
-      if (data.next && data.next.url) {
-        playingBase = false;
-        currentUserVideoId = data.next.id;
-        play(data.next.url);
+    // Al terminar:
+    // - si era el next video, lo marcamos reproducido y volvemos al base
+    // - si era el base, lo repetimos
+    player.addEventListener("ended", function () {
+      if (nextId && player.src.includes(nextUrl)) {
+        fetch("/mark_played/" + nextId + "/", { method: "POST" })
+          .catch(()=>{})
+          .finally(()=> play(baseUrl));
+      } else {
+        play(baseUrl);
       }
-    } catch (e) {
-      // si falla la consulta, no hacemos nada
-    }
-  }
-
-  // cuando termina:
-  player.addEventListener("ended", async () => {
-    if (!playingBase && currentUserVideoId) {
-      await markPlayed(currentUserVideoId);
-      playBase();
-    } else {
-      // base terminó, la volvemos a reproducir
-      playBase();
-    }
+    });
   });
-
-  // iniciar con base
-  playBase();
-
-  // polling cada 4 segundos
-  setInterval(checkNext, 4000);
-});
 </script>
 {% endblock %}
-
