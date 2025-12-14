@@ -4,7 +4,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core', '0001_initial'),  # 👈 si tu último archivo NO se llama así, decime el nombre
+        ('core', '0002_alter_video_fields_optional.py'),  # 👈 si tu último archivo NO se llama así, decime el nombre
     ]
 
     operations = [
