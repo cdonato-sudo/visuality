@@ -38,25 +38,6 @@ def live_view(request):
         "next_video": next_video,
     })
 
-from django.http import JsonResponse
-
-def next_video_api(request):
-    v = (
-        Video.objects
-        .filter(reproducido=False, usuario__isnull=False)
-        .order_by("id")
-        .first()
-    )
-    if not v:
-        return JsonResponse({"next": None})
-
-    return JsonResponse({
-        "next": {
-            "id": v.id,
-            "url": v.archivo.url,
-            "titulo": v.titulo or ""
-        }
-    })
 
 
 def upload_view(request):
