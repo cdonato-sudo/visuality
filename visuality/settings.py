@@ -36,6 +36,9 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
 ]
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+CSRF_TRUSTED_ORIGINS = ["https://visuality.onrender.com"]
+
 # -----------------------------------------------------------------------------
 # APPS
 # -----------------------------------------------------------------------------
