@@ -10,6 +10,7 @@ urlpatterns = [
     path("register/", views.register_view, name="register"),
     path("logout/", views.logout_view, name="logout"),
     path("mark_played/<int:video_id>/", views.mark_played, name="mark_played"),
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
     path(
         "password_reset/",
         auth_views.PasswordResetView.as_view(
