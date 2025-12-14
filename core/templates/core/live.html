@@ -2,71 +2,55 @@
 {% block title %}Pantalla en vivo{% endblock %}
 
 {% block content %}
-
 <h1 class="mb-4">Pantalla en vivo</h1>
 
 <div class="mb-4">
-  <video
-    id="player"
-    class="w-100"
-    autoplay
-    muted
-    playsinline
-    controls
-  >
-    {% if next_video %}
-      <source src="{{ next_video.archivo.url }}" type="video/mp4">
-    {% else %}
-      <source src="{{ base_video_url }}" type="video/mp4">
-    {% endif %}
-    Tu navegador no soporta la reproducción de video.
+  <video id="player"
+         class="w-100"
+         controls
+         autoplay
+         muted
+         playsinline>
+    Tu navegador no soporta video.
   </video>
 </div>
 
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const player = document.getElementById("player");
-
     const baseUrl = "{{ base_video_url }}";
 
-    const hasNext = {% if next_video %}true{% else %}false{% endif %};
-    const nextUrl = "{% if next_video %}{{ next_video.archivo.url }}{% endif %}";
+    // Si hay video pendiente, usamos ese; si no, base.
+    const nextUrl = {% if next_video %}"{{ next_video.archivo.url }}"{% else %}null{% endif %};
     const nextId  = {% if next_video %}{{ next_video.id }}{% else %}null{% endif %};
 
     function play(url) {
-      if (!url) return;
       player.src = url;
       player.load();
-
       const p = player.play();
-      if (p !== undefined) {
-        p.catch(() => {});
-      }
+      if (p !== undefined) p.catch(()=>{});
     }
 
-    // Si no hay video de usuario, aseguramos reproducir el base
-    if (!hasNext) {
+    // Arranque: si hay next, reproducilo. Si no, base.
+    play(nextUrl || baseUrl);
+
+    // Si el video falla (404, etc), volvemos al base
+    player.addEventListener("error", function () {
       play(baseUrl);
-    }
+    });
 
-    // Cuando termina un video
-    player.addEventListener("ended", async function () {
-      if (hasNext && nextId) {
-        // Avisamos al backend que este video ya se reprodujo
-        try {
-          await fetch(`/mark_played/${nextId}/`, {
-            method: "POST"
-          });
-        } catch (e) {}
-
-        // Volvemos al video base
-        play(baseUrl);
+    // Al terminar:
+    // - si era el next video, lo marcamos reproducido y volvemos al base
+    // - si era el base, lo repetimos
+    player.addEventListener("ended", function () {
+      if (nextId && player.src.includes(nextUrl)) {
+        fetch("/mark_played/" + nextId + "/", { method: "POST" })
+          .catch(()=>{})
+          .finally(()=> play(baseUrl));
       } else {
-        // Si era el video base, lo repetimos
         play(baseUrl);
       }
     });
   });
 </script>
-
 {% endblock %}
