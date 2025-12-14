@@ -14,6 +14,8 @@ urlpatterns = [
     path("logout/", views.logout_view, name="logout"),
 
     # Video: marcar como reproducido
+    path("api/next-video/", views.next_video_api, name="next_video_api"),
+
     path("mark_played/<int:video_id>/", views.mark_played, name="mark_played"),
 
     # Recuperación de contraseña
