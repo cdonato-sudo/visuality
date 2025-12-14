@@ -9,6 +9,7 @@ urlpatterns = [
     path("login/", views.login_view, name="login"),
     path("register/", views.register_view, name="register"),
     path("logout/", views.logout_view, name="logout"),
+    path("mark_played/<int:video_id>/", views.mark_played, name="mark_played"),
     path(
         "password_reset/",
         auth_views.PasswordResetView.as_view(
