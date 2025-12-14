@@ -40,25 +40,23 @@ def live_view(request):
 
 
 def upload_view(request):
-    # Si NO está logueado, lo mando a login con mensaje
     if not request.user.is_authenticated:
         messages.error(request, "Primero tenés que iniciar sesión para subir tu video.")
         return redirect("login")
 
     if request.method == "POST":
         form = VideoForm(request.POST, request.FILES)
-
         if form.is_valid():
-            video = form.save(commit=False)
-            video.usuario = request.user
-            video.reproducido = False  # 👈 queda pendiente para mostrarse
-            video.save()
-
-            messages.success(
-                request,
-                "Video subido correctamente. Se mostrará una vez en la pantalla."
-            )
-            return redirect("live")
+            try:
+                video = form.save(commit=False)
+                video.usuario = request.user
+                video.reproducido = False
+                video.save()
+                messages.success(request, "Video subido correctamente. Se mostrará una vez en la pantalla.")
+                return redirect("live")
+            except Exception as e:
+                print("ERROR SUBIENDO A CLOUDINARY:", repr(e))
+                messages.error(request, "No se pudo subir el video. Probá nuevamente en unos minutos.")
         else:
             messages.error(request, "Revisá el formulario. Hay errores.")
     else:
