@@ -1,5 +1,8 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
+from django.conf import settings
+from django.conf.urls.static import static
+
 from . import views
 
 urlpatterns = [
@@ -9,8 +12,11 @@ urlpatterns = [
     path("login/", views.login_view, name="login"),
     path("register/", views.register_view, name="register"),
     path("logout/", views.logout_view, name="logout"),
+
+    # Video: marcar como reproducido
     path("mark_played/<int:video_id>/", views.mark_played, name="mark_played"),
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+    # Recuperación de contraseña
     path(
         "password_reset/",
         auth_views.PasswordResetView.as_view(
@@ -39,5 +45,8 @@ urlpatterns = [
         ),
         name="password_reset_complete",
     ),
-
 ]
+
+# Servir archivos MEDIA (uploads)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
