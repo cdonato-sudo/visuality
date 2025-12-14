@@ -54,7 +54,7 @@ def upload_view(request):
                 video.reproducido = False
                 video.save()
                 messages.success(request, "Video subido correctamente. Se mostrará una vez en la pantalla.")
-                return redirect("live")
+                return redirect("upload")
             except Exception as e:
                 print("ERROR SUBIENDO A CLOUDINARY:", repr(e))
                 messages.error(request, "No se pudo subir el video. Probá nuevamente en unos minutos.")
