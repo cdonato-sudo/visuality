@@ -5,59 +5,68 @@
 
 <h1 class="mb-4">Pantalla en vivo</h1>
 
-{% if videos %}
-  <!-- Reproductor principal -->
-  <div class="mb-4">
-    <video id="player"
-           class="w-100"
-           controls
-           autoplay
-           muted
-           playsinline>
-      Tu navegador no soporta la reproducción de video.
-    </video>
-  </div>
+<div class="mb-4">
+  <video
+    id="player"
+    class="w-100"
+    autoplay
+    muted
+    playsinline
+    controls
+  >
+    {% if next_video %}
+      <source src="{{ next_video.archivo.url }}" type="video/mp4">
+    {% else %}
+      <source src="{{ base_video_url }}" type="video/mp4">
+    {% endif %}
+    Tu navegador no soporta la reproducción de video.
+  </video>
+</div>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const player = document.getElementById("player");
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const player = document.getElementById("player");
 
-      // Playlist generada desde Django (solo URLs)
-      const playlist = [
-        {% for v in videos %}
-          "{{ v.archivo.url }}"{% if not forloop.last %},{% endif %}
-        {% endfor %}
-      ];
+    const baseUrl = "{{ base_video_url }}";
 
-      if (!playlist.length || !player) return;
+    const hasNext = {% if next_video %}true{% else %}false{% endif %};
+    const nextUrl = "{% if next_video %}{{ next_video.archivo.url }}{% endif %}";
+    const nextId  = {% if next_video %}{{ next_video.id }}{% else %}null{% endif %};
 
-      let currentIndex = 0;
+    function play(url) {
+      if (!url) return;
+      player.src = url;
+      player.load();
 
-      function playCurrent() {
-        player.src = playlist[currentIndex];
-        player.load();
-
-        const promise = player.play();
-        if (promise !== undefined) {
-          promise.catch(err => {
-            console.log("Autoplay bloqueado:", err);
-          });
-        }
+      const p = player.play();
+      if (p !== undefined) {
+        p.catch(() => {});
       }
+    }
 
-      // Cuando termina un video → pasa al siguiente
-      player.addEventListener("ended", function () {
-        currentIndex = (currentIndex + 1) % playlist.length;  // vuelve al primero
-        playCurrent();
-      });
+    // Si no hay video de usuario, aseguramos reproducir el base
+    if (!hasNext) {
+      play(baseUrl);
+    }
 
-      // Iniciar reproducción
-      playCurrent();
+    // Cuando termina un video
+    player.addEventListener("ended", async function () {
+      if (hasNext && nextId) {
+        // Avisamos al backend que este video ya se reprodujo
+        try {
+          await fetch(`/mark_played/${nextId}/`, {
+            method: "POST"
+          });
+        } catch (e) {}
+
+        // Volvemos al video base
+        play(baseUrl);
+      } else {
+        // Si era el video base, lo repetimos
+        play(baseUrl);
+      }
     });
-  </script>
-
-{% else %}
-  <p class="text-muted">Todavía no hay videos cargados.</p>
-{% endif %}
+  });
+</script>
 
 {% endblock %}
