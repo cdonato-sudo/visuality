@@ -15,6 +15,38 @@
     <a href="{% url 'live' %}" class="btn btn-outline-primary">Ver pantalla en vivo</a>
 </div>
 
+{# ✅ Video de presentación arriba de los planes #}
+{% load static %}
+<div class="mb-5">
+    <div class="p-2 p-md-3 rounded-4 shadow-sm border"
+         style="background: rgba(255,255,255,.03); border-color: rgba(255,255,255,.12) !important;">
+        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
+            <h2 class="fw-bold mb-0" style="font-size: 1.15rem;">Mirá cómo se ve en pantalla</h2>
+            <span class="badge rounded-pill text-bg-primary">Demo</span>
+        </div>
+
+        <div class="ratio ratio-16x9 rounded-4 overflow-hidden"
+             style="background: #0b0f16; border: 1px solid rgba(0,170,255,.25);">
+            <video
+                autoplay
+                muted
+                loop
+                playsinline
+                controls
+                preload="metadata"
+                style="width:100%; height:100%; object-fit: cover;"
+            >
+                <source src="{% static 'videos/base.mp4' %}" type="video/mp4">
+                Tu navegador no soporta video HTML5.
+            </video>
+        </div>
+
+        <div class="mt-2 text-secondary small">
+            Tip: si no se reproduce automático en algunos celulares, tocá ▶️ (por políticas del navegador).
+        </div>
+    </div>
+</div>
+
 <hr class="border-secondary my-5">
 
 <h2 class="fw-bold mb-4">Planes disponibles</h2>
@@ -83,3 +115,4 @@
 {% endif %}
 
 {% endblock %}
+
