@@ -5,7 +5,7 @@ from cloudinary.models import CloudinaryField
 class Video(models.Model):
     titulo = models.CharField(max_length=255, blank=True)
 
-    # 👇 ESTE ES EL CAMBIO CLAVE
+    
     archivo = CloudinaryField(resource_type="video")
 
     fecha_subida = models.DateTimeField(auto_now_add=True)
